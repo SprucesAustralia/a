@@ -3,196 +3,405 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BARS - Protocolo de Manejo para David</title>
+  <title>Protocolo BARS para Cuidadores de David</title>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
-      padding: 15px;
-      background: linear-gradient(135deg, #f9f9f9, #eef6fb);
+      padding: 20px;
+      background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
       color: #333;
+      line-height: 1.6;
     }
-    h1, h2 {
+    h1 {
+      font-size: 28px;
       text-align: center;
-      color: #2c3e50;
+      color: #1a73e8;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
     }
-    h1 { font-size: 26px; margin-bottom: 20px; }
-    h2 { font-size: 22px; margin-top: 40px; }
-
-    /* Tabla de niveles */
+    h2 {
+      font-size: 22px;
+      color: #34495e;
+      text-align: center;
+      margin: 25px 0 15px;
+    }
     #niveles-list {
       list-style: none;
       padding: 0;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 15px;
+      max-width: 800px;
+      margin: 0 auto;
     }
     .nivel {
+      margin-bottom: 20px;
       border-radius: 12px;
-      padding: 15px;
+      padding: 20px;
       cursor: pointer;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-      transition: all 0.3s;
-      background: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
-    .nivel:hover { transform: translateY(-3px); }
-    .nivel-titulo { font-weight: bold; font-size: 18px; }
-    .nivel-descripcion { font-size: 14px; color: #555; }
+    .nivel:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    .nivel-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .nivel-titulo {
+      font-weight: bold;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nivel-descripcion {
+      font-size: 15px;
+      color: #555;
+    }
     .nivel-accion {
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.4s ease;
-      margin-top: 10px;
-      padding-left: 5px;
-      border-left: 3px solid #3498db;
+      transition: max-height 0.4s ease-out;
+      margin-top: 15px;
+      padding: 0;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
     }
-    .nivel-accion.show { max-height: 300px; padding: 10px; }
-
-    /* Colores */
-    .nivel[data-nivel="1"], .nivel[data-nivel="2"] { background: #d4edda; }
-    .nivel[data-nivel="3"] { background: #fff3cd; }
-    .nivel[data-nivel="4"] { background: #ffe8cc; }
-    .nivel[data-nivel="5"], .nivel[data-nivel="6"], .nivel[data-nivel="7"] { background: #f8d7da; }
-
-    /* Quiz */
-    #quiz { margin-top: 40px; }
-    .pregunta {
-      background: white;
-      border-radius: 10px;
+    .nivel-accion.show {
+      max-height: 500px;
       padding: 15px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
-    .pregunta p { font-weight: bold; }
-
-    label { display: block; margin-bottom: 8px; }
-    input[type="radio"], input[type="text"] { margin-right: 10px; }
-
-    /* Drag & Drop */
-    .drag-container { display: flex; gap: 10px; flex-wrap: wrap; }
-    .draggable {
-      padding: 10px;
-      background: #3498db;
-      color: white;
-      border-radius: 6px;
-      cursor: grab;
+    .nivel-accion p {
+      margin: 0;
+      font-size: 15px;
+      color: #444;
     }
-    .dropzone {
-      flex: 1;
-      min-height: 60px;
+    /* Colores por nivel con gradientes */
+    .nivel[data-nivel="1"], .nivel[data-nivel="2"] {
+      background: linear-gradient(135deg, #d4edda, #c3e6cb);
+      border: 1px solid #a8d5ba;
+    }
+    .nivel[data-nivel="3"] {
+      background: linear-gradient(135deg, #fff3cd, #ffeeba);
+      border: 1px solid #ffda99;
+    }
+    .nivel[data-nivel="4"] {
+      background: linear-gradient(135deg, #ffe8cc, #ffd8a8);
+      border: 1px solid #ffc078;
+    }
+    .nivel[data-nivel="5"], .nivel[data-nivel="6"], .nivel[data-nivel="7"] {
+      background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+      border: 1px solid #f1aeb5;
+    }
+    /* Íconos animados */
+    .icon {
+      font-size: 24px;
+      transition: transform 0.3s;
+    }
+    .nivel:hover .icon {
+      transform: scale(1.2) rotate(5deg);
+    }
+    /* Quiz Section */
+    #quiz {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .pregunta {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      transition: background 0.3s;
+    }
+    .pregunta:hover {
+      background: #f0f4f8;
+    }
+    .pregunta p {
+      margin: 0 0 15px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #2c3e50;
+    }
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    input[type="radio"] {
+      margin-right: 12px;
+    }
+    /* Fill-in-the-blank */
+    .fill-blank {
+      display: inline-block;
+      width: 150px;
+      padding: 8px;
       border: 2px dashed #aaa;
       border-radius: 6px;
-      padding: 10px;
+      font-size: 15px;
+      margin: 0 5px;
     }
-
-    /* Botón */
-    button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      background: #3498db;
-      color: white;
-      border: none;
+    /* Matching (Drag & Drop) */
+    .matching-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .matching-left, .matching-right {
+      flex: 1;
+      list-style: none;
+      padding: 0;
+    }
+    .matching-item {
+      background: #e3f2fd;
+      padding: 10px;
+      margin-bottom: 10px;
       border-radius: 8px;
       cursor: pointer;
       transition: background 0.3s;
     }
-    button:hover { background: #2980b9; }
-
-    /* Feedback */
+    .matching-item:hover {
+      background: #bbdefb;
+    }
+    .drop-target {
+      min-height: 50px;
+      border: 2px dashed #ccc;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 8px;
+    }
+    /* Progreso */
+    #progreso {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 20px;
+      color: #666;
+    }
     #resultado {
       text-align: center;
-      font-size: 18px;
-      margin-top: 20px;
+      font-size: 20px;
+      margin-top: 30px;
       font-weight: bold;
+      color: #27ae60;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.3s, background 0.3s;
+    }
+    button:hover {
+      transform: scale(1.02);
+      background: linear-gradient(135deg, #0d47a1, #1a73e8);
+    }
+    /* Confetti for fun */
+    canvas#confetti {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1000;
+    }
+    /* Mobile */
+    @media (max-width: 600px) {
+      body { padding: 15px; }
+      h1 { font-size: 24px; }
+      h2 { font-size: 20px; }
+      .nivel { padding: 15px; }
+      .nivel-titulo { font-size: 18px; }
+      .pregunta p { font-size: 16px; }
     }
   </style>
 </head>
 <body>
-  <h1>Protocolo BARS para Cuidadores de David</h1>
-  <section>
-    <h2>Niveles de Agitación</h2>
+  <h1>Protocolo BARS para Cuidadores y Visitantes de David</h1>
+  <p style="text-align: center; max-width: 800px; margin: 0 auto 30px; font-size: 16px; color: #555;">
+    ¡Bienvenido! Esta herramienta interactiva te ayuda a manejar la Escala de Actividad Conductual (BARS), ideal para el cuidado y monitoreo de pacientes con problemas mentales como David. Aprende los niveles de agitación y cómo actuar de forma segura y efectiva. ¡Es fácil, divertido y útil para cualquier cuidador o visitante!
+  </p>
+
+  <section id="tabla-niveles">
+    <h2>Niveles de Agitación en BARS</h2>
     <ul id="niveles-list">
       <li class="nivel" data-nivel="1">
-        <span class="nivel-titulo">Nivel 1: Dormido 😴</span>
-        <span class="nivel-descripcion">El paciente duerme tranquilo.</span>
-        <div class="nivel-accion"><p>Supervisión regular, sin acción inmediata.</p></div>
+        <div class="nivel-header">
+          <span class="nivel-titulo"><span class="icon">😴</span> Nivel 1: Dormido</span>
+          <span class="nivel-descripcion">David está durmiendo profundamente, sin signos de agitación.</span>
+        </div>
+        <div class="nivel-accion">
+          <p>No se necesita acción inmediata. Mantén la supervisión regular con visitas del enfermero 3 veces por semana. Usa cámaras para monitoreo remoto si es necesario.</p>
+        </div>
       </li>
       <li class="nivel" data-nivel="2">
-        <span class="nivel-titulo">Nivel 2: Somnoliento 😌</span>
-        <span class="nivel-descripcion">Despierto pero muy adormilado.</span>
-        <div class="nivel-accion"><p>Observar y mantener rutinas normales.</p></div>
+        <div class="nivel-header">
+          <span class="nivel-titulo"><span class="icon">😌</span> Nivel 2: Somnoliento</span>
+          <span class="nivel-descripcion">Despierto pero adormilado, se duerme fácilmente sin estímulos.</span>
+        </div>
+        <div class="nivel-accion">
+          <p>Observa de cerca. No acción inmediata, pero vigila si sube de nivel. Mantén las visitas regulares del enfermero.</p>
+        </div>
       </li>
       <li class="nivel" data-nivel="3">
-        <span class="nivel-titulo">Nivel 3: Inquieto 🚶‍♂️</span>
-        <span class="nivel-descripcion">Camina de un lado a otro.</span>
-        <div class="nivel-accion"><p>Mayor supervisión. Llamar al enfermero si persiste +30 min.</p></div>
+        <div class="nivel-header">
+          <span class="nivel-titulo"><span class="icon">🚶‍♂️</span> Nivel 3: Inquieto</span>
+          <span class="nivel-descripcion">Camina sin parar, no puede quedarse quieto, pero no hay agitación agresiva.</span>
+        </div>
+        <div class="nivel-accion">
+          <p>Aumenta la supervisión con cámaras. Si dura más de 30 minutos, llama al enfermero para una visita extra. Distrae con actividades calmantes.</p>
+        </div>
       </li>
       <li class="nivel" data-nivel="4">
-        <span class="nivel-titulo">Nivel 4: Agitado 😠</span>
-        <span class="nivel-descripcion">Agresión verbal o inquietud intensa.</span>
-        <div class="nivel-accion"><p>Desescalar con calma y llamar al enfermero.</p></div>
+        <div class="nivel-header">
+          <span class="nivel-titulo"><span class="icon">😠</span> Nivel 4: Agitado</span>
+          <span class="nivel-descripcion">Más movimiento, agresión verbal, interfiere en el cuidado.</span>
+        </div>
+        <div class="nivel-accion">
+          <p>Habla con calma, reduce estímulos, distrae. Llama al enfermero de inmediato. Si no mejora en 15-30 min, traslada al hospital general (15 min de distancia).</p>
+        </div>
       </li>
       <li class="nivel" data-nivel="5">
-        <span class="nivel-titulo">Nivel 5: Muy agitado 📢</span>
-        <span class="nivel-descripcion">Gritos fuertes, agresión leve.</span>
-        <div class="nivel-accion"><p>Llamar enfermero y preparar traslado hospital.</p></div>
+        <div class="nivel-header">
+          <span class="nivel-titulo"><span class="icon">📢</span> Nivel 5: Muy Agitado</span>
+          <span class="nivel-descripcion">Gritos intensos, agresión física leve.</span>
+        </div>
+        <div class="nivel-accion">
+          <p>Llama al enfermero y a un familiar/vecino para seguridad. Mantén distancia y prepara traslado urgente al hospital general.</p>
+        </div>
       </li>
       <li class="nivel" data-nivel="6">
-        <span class="nivel-titulo">Nivel 6: Hostil ⚠️</span>
-        <span class="nivel-descripcion">Amenaza a personas o propiedad.</span>
-        <div class="nivel-accion"><p>Resguardarse y llamar a emergencias.</p></div>
+        <div class="nivel-header">
+          <span class="nivel-titulo"><span class="icon">⚠️</span> Nivel 6: Hostil</span>
+          <span class="nivel-descripcion">Amenazas abiertas a personas o cosas, sin contacto físico.</span>
+        </div>
+        <div class="nivel-accion">
+          <p>Resguárdate en un lugar seguro (habitación con llave). Llama a emergencias (112) y al enfermero. No intervengas solo.</p>
+        </div>
       </li>
       <li class="nivel" data-nivel="7">
-        <span class="nivel-titulo">Nivel 7: Agresivo 🚨</span>
-        <span class="nivel-descripcion">Ataca físicamente.</span>
-        <div class="nivel-accion"><p>Salir o encerrarse. Llamar policía + ambulancia.</p></div>
+        <div class="nivel-header">
+          <span class="nivel-titulo"><span class="icon">🚨</span> Nivel 7: Agresivo</span>
+          <span class="nivel-descripcion">Ataques físicos a personas o propiedad.</span>
+        </div>
+        <div class="nivel-accion">
+          <p>Sal de la casa o enciérrate inmediatamente. Llama a emergencias (112) pidiendo ambulancia y policía. No intentes contenerlo.</p>
+        </div>
       </li>
     </ul>
   </section>
 
   <section id="quiz">
-    <h2>Quiz Interactivo 🎮</h2>
+    <h2>¡Quiz Interactivo y Divertido sobre BARS!</h2>
+    <p style="text-align: center; font-size: 16px; color: #555; margin-bottom: 20px;">Prueba tus conocimientos con preguntas variadas: selecciona, completa, empareja y más. ¡Gana puntos y confeti al final! 🎉</p>
+    <div id="progreso">Pregunta 1 de 10</div>
     <form id="quiz-form">
-      <!-- Pregunta múltiple -->
-      <div class="pregunta">
-        <p>1. Si David está dormido, ¿qué hacer?</p>
-        <label><input type="radio" name="q1" value="b"> Supervisión regular</label>
-        <label><input type="radio" name="q1" value="a"> Llamar emergencias</label>
+      <!-- Pregunta 1: Multiple Choice -->
+      <div class="pregunta" id="q1">
+        <p>1. ¿Qué hacer si David está durmiendo (Nivel 1)?</p>
+        <label><input type="radio" name="q1" value="a"> Llamar al enfermero inmediatamente</label>
+        <label><input type="radio" name="q1" value="b"> Supervisión regular, sin acción extra</label>
+        <label><input type="radio" name="q1" value="c"> Trasladar al hospital</label>
       </div>
 
-      <!-- Completar la frase -->
-      <div class="pregunta">
-        <p>2. Completa: En Nivel 4 debo hablar con _____ y llamar al enfermero.</p>
-        <input type="text" name="q2" placeholder="Escribe aquí">
+      <!-- Pregunta 2: Fill in the Blank -->
+      <div class="pregunta" id="q2" style="display:none;">
+        <p>2. Completa la oración: En Nivel 3 (Inquieto), si dura más de <input type="text" class="fill-blank" id="blank2" placeholder="¿cuántos minutos?"> minutos, llama al enfermero.</p>
       </div>
 
-      <!-- Drag & Drop -->
-      <div class="pregunta">
-        <p>3. Arrastra la acción al nivel correcto:</p>
-        <div class="drag-container">
-          <div class="draggable" draggable="true" data-respuesta="3">Mayor supervisión</div>
-          <div class="draggable" draggable="true" data-respuesta="7">Llamar a policía</div>
+      <!-- Pregunta 3: Multiple Choice -->
+      <div class="pregunta" id="q3" style="display:none;">
+        <p>3. ¿Qué nivel es si David grita insultos y se mueve mucho?</p>
+        <label><input type="radio" name="q3" value="a"> Nivel 2</label>
+        <label><input type="radio" name="q3" value="b"> Nivel 4</label>
+        <label><input type="radio" name="q3" value="c"> Nivel 7</label>
+      </div>
+
+      <!-- Pregunta 4: Matching (Drag & Drop) -->
+      <div class="pregunta" id="q4" style="display:none;">
+        <p>4. Empareja el nivel con su descripción (arrastra los items):</p>
+        <div class="matching-container">
+          <ul class="matching-left">
+            <li class="matching-item" draggable="true" data-match="dormido">Nivel 1</li>
+            <li class="matching-item" draggable="true" data-match="agitado">Nivel 4</li>
+            <li class="matching-item" draggable="true" data-match="hostil">Nivel 6</li>
+          </ul>
+          <div class="matching-right">
+            <div class="drop-target" data-target="dormido">Durmiendo tranquilo</div>
+            <div class="drop-target" data-target="agitado">Agresión verbal</div>
+            <div class="drop-target" data-target="hostil">Amenazas sin contacto</div>
+          </div>
         </div>
-        <div class="dropzone" data-nivel="3">Nivel 3</div>
-        <div class="dropzone" data-nivel="7">Nivel 7</div>
       </div>
 
-      <!-- Matching con opciones -->
-      <div class="pregunta">
-        <p>4. Relaciona el nivel con su acción:</p>
-        <select name="q4">
-          <option value="">-- Elige --</option>
-          <option value="5">Nivel 5 → Traslado hospital</option>
-          <option value="2">Nivel 2 → Ignorarlo</option>
-        </select>
+      <!-- Pregunta 5: Fill in the Blank -->
+      <div class="pregunta" id="q5" style="display:none;">
+        <p>5. Completa: En Nivel 5, mantén <input type="text" class="fill-blank" id="blank5" placeholder="¿qué?"> y llama ayuda inmediata.</p>
       </div>
 
-      <button type="submit">Evaluar Respuestas ✅</button>
+      <!-- Pregunta 6: Multiple Choice -->
+      <div class="pregunta" id="q6" style="display:none;">
+        <p>6. ¿Qué NO hacer en Nivel 6 (Hostil)?</p>
+        <label><input type="radio" name="q6" value="a"> Llamar emergencias</label>
+        <label><input type="radio" name="q6" value="b"> Confrontarlo solo</label>
+        <label><input type="radio" name="q6" value="c"> Resguardarte</label>
+      </div>
+
+      <!-- Pregunta 7: Matching -->
+      <div class="pregunta" id="q7" style="display:none;">
+        <p>7. Empareja acción con nivel:</p>
+        <div class="matching-container">
+          <ul class="matching-left">
+            <li class="matching-item" draggable="true" data-match="supervision">Nivel 3</li>
+            <li class="matching-item" draggable="true" data-match="desescalar">Nivel 4</li>
+            <li class="matching-item" draggable="true" data-match="emergencias">Nivel 7</li>
+          </ul>
+          <div class="matching-right">
+            <div class="drop-target" data-target="supervision">Aumentar supervisión</div>
+            <div class="drop-target" data-target="desescalar">Hablar con calma</div>
+            <div class="drop-target" data-target="emergencias">Salir y llamar 112</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pregunta 8: Fill in the Blank -->
+      <div class="pregunta" id="q8" style="display:none;">
+        <p>8. Completa: Usa <input type="text" class="fill-blank" id="blank8" placeholder="¿qué?"> para monitorear en Nivel 3.</p>
+      </div>
+
+      <!-- Pregunta 9: Multiple Choice -->
+      <div class="pregunta" id="q9" style="display:none;">
+        <p>9. ¿A qué hospital priorizar en Nivel 5?</p>
+        <label><input type="radio" name="q9" value="a"> General (15 min)</label>
+        <label><input type="radio" name="q9" value="b"> Salud mental (40 min)</label>
+        <label><input type="radio" name="q9" value="c"> Ninguno</label>
+      </div>
+
+      <!-- Pregunta 10: Fill in the Blank -->
+      <div class="pregunta" id="q10" style="display:none;">
+        <p>10. Completa: BARS es una herramienta para el <input type="text" class="fill-blank" id="blank10" placeholder="¿qué?"> de pacientes mentales.</p>
+      </div>
+
+      <button type="button" id="next-btn">Siguiente Pregunta</button>
+      <button type="submit" id="submit-btn" style="display:none;">Evaluar y Ver Resultado</button>
     </form>
     <div id="resultado"></div>
   </section>
+
+  <canvas id="confetti" width="100%" height="100%"></canvas>
 
   <script>
     // Expandir niveles
@@ -202,42 +411,154 @@
       });
     });
 
-    // Drag & Drop
-    const draggables = document.querySelectorAll('.draggable');
-    const dropzones = document.querySelectorAll('.dropzone');
+    // Quiz Logic
+    const questions = 10;
+    let currentQuestion = 1;
+    const correctAnswers = {
+      q1: 'b',
+      blank2: '30',
+      q3: 'b',
+      // For matching q4 and q7, checked in evaluate
+      blank5: 'distancia',
+      q6: 'b',
+      // q7 matching
+      blank8: 'cámaras',
+      q9: 'a',
+      blank10: 'cuidado' // o 'monitoreo'
+    };
 
-    draggables.forEach(d => {
-      d.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', d.dataset.respuesta); });
+    const progreso = document.getElementById('progreso');
+    const nextBtn = document.getElementById('next-btn');
+    const submitBtn = document.getElementById('submit-btn');
+    const form = document.getElementById('quiz-form');
+    const resultado = document.getElementById('resultado');
+
+    nextBtn.addEventListener('click', () => {
+      if (currentQuestion < questions) {
+        document.getElementById(`q${currentQuestion}`).style.display = 'none';
+        currentQuestion++;
+        document.getElementById(`q${currentQuestion}`).style.display = 'block';
+        progreso.textContent = `Pregunta ${currentQuestion} de ${questions}`;
+        if (currentQuestion === questions) {
+          nextBtn.style.display = 'none';
+          submitBtn.style.display = 'block';
+        }
+      }
     });
 
-    dropzones.forEach(z => {
-      z.addEventListener('dragover', e => e.preventDefault());
-      z.addEventListener('drop', e => {
-        e.preventDefault();
-        const respuesta = e.dataTransfer.getData('text/plain');
-        z.textContent = `Nivel ${z.dataset.nivel}: ${respuesta == z.dataset.nivel ? '✔️ Correcto' : '❌ Incorrecto'}`;
+    // Drag and Drop for Matching
+    const draggables = document.querySelectorAll('.matching-item');
+    const dropTargets = document.querySelectorAll('.drop-target');
+
+    draggables.forEach(draggable => {
+      draggable.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text', draggable.dataset.match);
       });
     });
 
-    // Evaluar quiz
-    document.getElementById('quiz-form').addEventListener('submit', e => {
+    dropTargets.forEach(target => {
+      target.addEventListener('dragover', e => e.preventDefault());
+      target.addEventListener('drop', e => {
+        const data = e.dataTransfer.getData('text');
+        if (target.dataset.target === data) {
+          target.textContent = target.textContent + ' ✅';
+          target.style.background = '#d4edda';
+        } else {
+          target.style.background = '#f8d7da';
+        }
+      });
+    });
+
+    form.addEventListener('submit', e => {
       e.preventDefault();
       let score = 0;
 
-      // Q1
+      // Check q1
       const q1 = document.querySelector('input[name="q1"]:checked');
-      if (q1 && q1.value === 'b') score++;
+      if (q1 && q1.value === correctAnswers.q1) score++;
 
-      // Q2
-      const q2 = document.querySelector('input[name="q2"]').value.trim().toLowerCase();
-      if (q2 === 'calma') score++;
+      // Check blank2
+      if (document.getElementById('blank2').value.trim() === correctAnswers.blank2) score++;
 
-      // Q4
-      const q4 = document.querySelector('select[name="q4"]').value;
-      if (q4 === '5') score++;
+      // Check q3
+      const q3 = document.querySelector('input[name="q3"]:checked');
+      if (q3 && q3.value === correctAnswers.q3) score++;
 
-      document.getElementById('resultado').textContent = `Puntuación: ${score}/3 (más drag & drop aparte)`;
+      // Check matching q4 (manual count if all correct)
+      let q4Correct = 0;
+      document.querySelectorAll('#q4 .drop-target').forEach(target => {
+        if (target.textContent.includes('✅')) q4Correct++;
+      });
+      if (q4Correct === 3) score++;
+
+      // Check blank5
+      if (document.getElementById('blank5').value.trim().toLowerCase() === correctAnswers.blank5) score++;
+
+      // Check q6
+      const q6 = document.querySelector('input[name="q6"]:checked');
+      if (q6 && q6.value === correctAnswers.q6) score++;
+
+      // Check matching q7
+      let q7Correct = 0;
+      document.querySelectorAll('#q7 .drop-target').forEach(target => {
+        if (target.textContent.includes('✅')) q7Correct++;
+      });
+      if (q7Correct === 3) score++;
+
+      // Check blank8
+      if (document.getElementById('blank8').value.trim().toLowerCase() === correctAnswers.blank8) score++;
+
+      // Check q9
+      const q9 = document.querySelector('input[name="q9"]:checked');
+      if (q9 && q9.value === correctAnswers.q9) score++;
+
+      // Check blank10
+      const blank10Val = document.getElementById('blank10').value.trim().toLowerCase();
+      if (blank10Val === correctAnswers.blank10 || blank10Val === 'monitoreo') score++;
+
+      resultado.textContent = `¡Tu puntuación es: ${score}/${questions}! 🎉 ${score >= 8 ? '¡Excelente trabajo!' : '¡Sigue practicando!'}`;
+
+      if (score >= 8) launchConfetti();
     });
+
+    // Confetti Animation
+    function launchConfetti() {
+      const canvas = document.getElementById('confetti');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const ctx = canvas.getContext('2d');
+      const pieces = [];
+      for (let i = 0; i < 200; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          r: Math.random() * 4 + 1,
+          d: Math.random() * 200 + 1,
+          color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+          tilt: Math.random() * 10 - 10,
+          tiltAngle: 0
+        });
+      }
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        pieces.forEach(p => {
+          p.tiltAngle += 0.01;
+          p.y += (1 + p.r / 2);
+          p.x += Math.sin(p.tiltAngle);
+          p.tilt = Math.sin(p.tiltAngle) * 15;
+          if (p.y > canvas.height) p.y = -10;
+          ctx.beginPath();
+          ctx.lineWidth = p.r;
+          ctx.strokeStyle = p.color;
+          ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+          ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+          ctx.stroke();
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+      setTimeout(() => canvas.style.display = 'none', 5000);
+    }
   </script>
 </body>
 </html>
