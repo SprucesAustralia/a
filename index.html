@@ -1,385 +1,243 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protocolo de Manejo para David</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 15px;
-            background-color: #f5f5f5;
-            font-size: 16px;
-            line-height: 1.5;
-            color: #333;
-        }
-        h1 {
-            font-size: 24px;
-            text-align: center;
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-        h2 {
-            font-size: 20px;
-            color: #34495e;
-            text-align: center;
-            margin: 20px 0 10px;
-        }
-        #niveles-list {
-            list-style: none;
-            padding: 0;
-            max-width: 100%;
-        }
-        .nivel {
-            margin-bottom: 15px;
-            border-radius: 8px;
-            padding: 15px;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.2s ease;
-        }
-        .nivel:active {
-            transform: scale(0.98);
-        }
-        .nivel-header {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        .nivel-titulo {
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .nivel-descripcion {
-            font-size: 14px;
-            color: #666;
-        }
-        .nivel-accion {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            margin-top: 10px;
-            padding: 0;
-            background-color: #fff;
-            border-radius: 5px;
-        }
-        .nivel-accion.show {
-            max-height: 300px; /* Ajustado para contenido */
-            padding: 10px;
-        }
-        .nivel-accion p {
-            margin: 0;
-            font-size: 14px;
-            color: #444;
-        }
-        /* Colores por nivel */
-        .nivel[data-nivel="1"], .nivel[data-nivel="2"] {
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-        }
-        .nivel[data-nivel="3"] {
-            background-color: #fff3cd;
-            border: 1px solid #ffeeba;
-        }
-        .nivel[data-nivel="4"] {
-            background-color: #ffe8cc;
-            border: 1px solid #ffd8a8;
-        }
-        .nivel[data-nivel="5"], .nivel[data-nivel="6"], .nivel[data-nivel="7"] {
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-        }
-        /* Quiz */
-        #quiz {
-            margin-top: 30px;
-        }
-        .pregunta {
-            margin-bottom: 20px;
-            background-color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .pregunta p {
-            margin: 0 0 10px;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-        input[type="radio"] {
-            margin-right: 10px;
-        }
-        button {
-            display: block;
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        /* Mobile optimization */
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-            h1 {
-                font-size: 22px;
-            }
-            h2 {
-                font-size: 18px;
-            }
-            .nivel {
-                padding: 12px;
-            }
-            .nivel-titulo {
-                font-size: 16px;
-            }
-            .nivel-descripcion, .nivel-accion p {
-                font-size: 13px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BARS - Protocolo de Manejo para David</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 15px;
+      background: linear-gradient(135deg, #f9f9f9, #eef6fb);
+      color: #333;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    h1 { font-size: 26px; margin-bottom: 20px; }
+    h2 { font-size: 22px; margin-top: 40px; }
+
+    /* Tabla de niveles */
+    #niveles-list {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
+    }
+    .nivel {
+      border-radius: 12px;
+      padding: 15px;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+      background: white;
+    }
+    .nivel:hover { transform: translateY(-3px); }
+    .nivel-titulo { font-weight: bold; font-size: 18px; }
+    .nivel-descripcion { font-size: 14px; color: #555; }
+    .nivel-accion {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+      margin-top: 10px;
+      padding-left: 5px;
+      border-left: 3px solid #3498db;
+    }
+    .nivel-accion.show { max-height: 300px; padding: 10px; }
+
+    /* Colores */
+    .nivel[data-nivel="1"], .nivel[data-nivel="2"] { background: #d4edda; }
+    .nivel[data-nivel="3"] { background: #fff3cd; }
+    .nivel[data-nivel="4"] { background: #ffe8cc; }
+    .nivel[data-nivel="5"], .nivel[data-nivel="6"], .nivel[data-nivel="7"] { background: #f8d7da; }
+
+    /* Quiz */
+    #quiz { margin-top: 40px; }
+    .pregunta {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .pregunta p { font-weight: bold; }
+
+    label { display: block; margin-bottom: 8px; }
+    input[type="radio"], input[type="text"] { margin-right: 10px; }
+
+    /* Drag & Drop */
+    .drag-container { display: flex; gap: 10px; flex-wrap: wrap; }
+    .draggable {
+      padding: 10px;
+      background: #3498db;
+      color: white;
+      border-radius: 6px;
+      cursor: grab;
+    }
+    .dropzone {
+      flex: 1;
+      min-height: 60px;
+      border: 2px dashed #aaa;
+      border-radius: 6px;
+      padding: 10px;
+    }
+
+    /* Botón */
+    button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover { background: #2980b9; }
+
+    /* Feedback */
+    #resultado {
+      text-align: center;
+      font-size: 18px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-    <h1>Protocolo de Manejo para David</h1>
-    <section id="tabla-niveles">
-        <h2>Niveles de Agitación y Acciones</h2>
-        <ul id="niveles-list">
-            <li class="nivel" data-nivel="1">
-                <div class="nivel-header">
-                    <span class="nivel-titulo">Nivel 1: Dormido</span>
-                    <span class="nivel-descripcion">El paciente está durmiendo, sin signos de agitación.</span>
-                </div>
-                <div class="nivel-accion">
-                    <p>No se requiere acción inmediata. Continuar con la supervisión regular y las visitas del enfermero tres veces por semana.</p>
-                </div>
-            </li>
-            <li class="nivel" data-nivel="2">
-                <div class="nivel-header">
-                    <span class="nivel-titulo">Nivel 2: Somnoliento</span>
-                    <span class="nivel-descripcion">El paciente está despierto pero somnoliento, puede dormirse si no se le estimula, sin agitación evidente.</span>
-                </div>
-                <div class="nivel-accion">
-                    <p>No se requiere acción inmediata. Observar si progresa a niveles superiores, manteniendo las visitas del enfermero tres veces por semana.</p>
-                </div>
-            </li>
-            <li class="nivel" data-nivel="3">
-                <div class="nivel-header">
-                    <span class="nivel-titulo">Nivel 3: Inquieto</span>
-                    <span class="nivel-descripcion">El paciente está despierto y en movimiento, como caminando de un lado a otro, incapaz de sentarse quieto, pero aún no agitado.</span>
-                </div>
-                <div class="nivel-accion">
-                    <p>Aumentar la supervisión. La madre debe estar más atenta y usar las cámaras para monitorear. Si la inquietud persiste más de 30 minutos o aumenta, llamar al enfermero para una visita adicional ese día.</p>
-                </div>
-            </li>
-            <li class="nivel" data-nivel="4">
-                <div class="nivel-header">
-                    <span class="nivel-titulo">Nivel 4: Agitado</span>
-                    <span class="nivel-descripcion">Aumento de la actividad motora, agresión verbal, inquietud que interfiere con el cuidado.</span>
-                </div>
-                <div class="nivel-accion">
-                    <p>Implementar medidas de desescalada: hablar con calma, reducir estímulos, distraer con actividades. Llamar al enfermero inmediatamente para que acuda lo antes posible. Si la agitación no cede en 15-30 minutos, planificar un traslado al hospital general (15 min) el mismo día.</p>
-                </div>
-            </li>
-            <li class="nivel" data-nivel="5">
-                <div class="nivel-header">
-                    <span class="nivel-titulo">Nivel 5: Muy agitado</span>
-                    <span class="nivel-descripcion">Agitación intensa, gritos más fuertes, agresión física leve.</span>
-                </div>
-                <div class="nivel-accion">
-                    <p>Llamar al enfermero y a seguridad (familiar/vecino designado) de inmediato. Preparar un traslado urgente al hospital general (15 min). La madre debe mantenerse a distancia segura, evitando confrontarlo directamente.</p>
-                </div>
-            </li>
-            <li class="nivel" data-nivel="6">
-                <div class="nivel-header">
-                    <span class="nivel-titulo">Nivel 6: Hostil</span>
-                    <span class="nivel-descripcion">Comportamiento abiertamente hostil, amenazando a otros o a la propiedad, sin llegar a la agresión física.</span>
-                </div>
-                <div class="nivel-accion">
-                    <p>La madre debe resguardarse en un lugar seguro (habitación con cerradura si es posible). Llamar a emergencias (112) y al enfermero. No intentar calmarlo sola; esperar ayuda profesional.</p>
-                </div>
-            </li>
-            <li class="nivel" data-nivel="7">
-                <div class="nivel-header">
-                    <span class="nivel-titulo">Nivel 7: Amenazante físicamente o agresivo</span>
-                    <span class="nivel-descripcion">Atacando físicamente a otros o a la propiedad.</span>
-                </div>
-                <div class="nivel-accion">
-                    <p>La madre debe salir de la casa o encerrarse inmediatamente en un lugar seguro. Llamar a emergencias (112) de inmediato, solicitando ambulancia y policía si hay peligro inminente. No intentar contener a David bajo ninguna circunstancia.</p>
-                </div>
-            </li>
-        </ul>
-    </section>
-    <section id="quiz">
-        <h2>Quiz de Conocimiento</h2>
-        <form id="quiz-form">
-            <div class="pregunta">
-                <p>1. ¿Qué hacer si David está durmiendo (Nivel 1)?</p>
-                <label><input type="radio" name="q1" value="a"> Llamar al enfermero</label>
-                <label><input type="radio" name="q1" value="b"> Supervisión regular</label>
-                <label><input type="radio" name="q1" value="c"> Ir al hospital</label>
-            </div>
-            <div class="pregunta">
-                <p>2. Si David está somnoliento (Nivel 2), ¿qué es lo primero?</p>
-                <label><input type="radio" name="q2" value="a"> Observar si empeora</label>
-                <label><input type="radio" name="q2" value="b"> Llamar a emergencias</label>
-                <label><input type="radio" name="q2" value="c"> Darle medicación</label>
-            </div>
-            <div class="pregunta">
-                <p>3. ¿Qué nivel es si David camina sin parar?</p>
-                <label><input type="radio" name="q3" value="a"> Nivel 1</label>
-                <label><input type="radio" name="q3" value="b"> Nivel 3</label>
-                <label><input type="radio" name="q3" value="c"> Nivel 5</label>
-            </div>
-            <div class="pregunta">
-                <p>4. En Nivel 3, ¿cuándo llamar al enfermero?</p>
-                <label><input type="radio" name="q4" value="a"> Inmediatamente</label>
-                <label><input type="radio" name="q4" value="b"> Si persiste 30 min</label>
-                <label><input type="radio" name="q4" value="c"> Nunca</label>
-            </div>
-            <div class="pregunta">
-                <p>5. Si David grita insultos (Nivel 4), ¿qué hacer?</p>
-                <label><input type="radio" name="q5" value="a"> Desescalar y llamar al enfermero</label>
-                <label><input type="radio" name="q5" value="b"> Ignorarlo</label>
-                <label><input type="radio" name="q5" value="c"> Llevarlo al hospital ya</label>
-            </div>
-            <div class="pregunta">
-                <p>6. ¿Qué nivel es agresión física leve?</p>
-                <label><input type="radio" name="q6" value="a"> Nivel 4</label>
-                <label><input type="radio" name="q6" value="b"> Nivel 5</label>
-                <label><input type="radio" name="q6" value="c"> Nivel 7</label>
-            </div>
-            <div class="pregunta">
-                <p>7. En Nivel 5, ¿qué debe hacer la madre?</p>
-                <label><input type="radio" name="q7" value="a"> Confrontarlo</label>
-                <label><input type="radio" name="q7" value="b"> Mantener distancia y llamar ayuda</label>
-                <label><input type="radio" name="q7" value="c"> Esconderse</label>
-            </div>
-            <div class="pregunta">
-                <p>8. Si David amenaza pero no golpea (Nivel 6), ¿qué hacer?</p>
-                <label><input type="radio" name="q8" value="a"> Hablarle con calma</label>
-                <label><input type="radio" name="q8" value="b"> Resguardarse y llamar emergencias</label>
-                <label><input type="radio" name="q8" value="c"> Llevarlo al hospital en coche</label>
-            </div>
-            <div class="pregunta">
-                <p>9. ¿Qué hacer si David golpea a alguien (Nivel 7)?</p>
-                <label><input type="radio" name="q9" value="a"> Intentar calmarlo</label>
-                <label><input type="radio" name="q9" value="b"> Salir y llamar emergencias</label>
-                <label><input type="radio" name="q9" value="c"> Llevarlo al hospital</label>
-            </div>
-            <div class="pregunta">
-                <p>10. ¿Qué es un síntoma de Nivel 4?</p>
-                <label><input type="radio" name="q10" value="a"> Dormido</label>
-                <label><input type="radio" name="q10" value="b"> Agresión verbal</label>
-                <label><input type="radio" name="q10" value="c"> Ataque físico</label>
-            </div>
-            <div class="pregunta">
-                <p>11. En Nivel 1, ¿cuántas veces viene el enfermero?</p>
-                <label><input type="radio" name="q11" value="a"> Diario</label>
-                <label><input type="radio" name="q11" value="b"> 3 veces por semana</label>
-                <label><input type="radio" name="q11" value="c"> Solo emergencias</label>
-            </div>
-            <div class="pregunta">
-                <p>12. Si David está desconectado, ¿qué nivel podría ser?</p>
-                <label><input type="radio" name="q12" value="a"> Nivel 3</label>
-                <label><input type="radio" name="q12" value="b"> Nivel 5</label>
-                <label><input type="radio" name="q12" value="c"> Nivel 7</label>
-            </div>
-            <div class="pregunta">
-                <p>13. ¿Qué técnica usar en Nivel 4?</p>
-                <label><input type="radio" name="q13" value="a"> Gritarle</label>
-                <label><input type="radio" name="q13" value="b"> Hablar con calma</label>
-                <label><input type="radio" name="q13" value="c"> Ignorarlo</label>
-            </div>
-            <div class="pregunta">
-                <p>14. En Nivel 6, ¿quién debe intervenir?</p>
-                <label><input type="radio" name="q14" value="a"> La madre sola</label>
-                <label><input type="radio" name="q14" value="b"> Emergencias</label>
-                <label><input type="radio" name="q14" value="c"> Un vecino</label>
-            </div>
-            <div class="pregunta">
-                <p>15. ¿Cuándo ir al hospital en Nivel 4?</p>
-                <label><input type="radio" name="q15" value="a"> Si no cede en 15-30 min</label>
-                <label><input type="radio" name="q15" value="b"> Inmediatamente</label>
-                <label><input type="radio" name="q15" value="c"> Al día siguiente</label>
-            </div>
-            <div class="pregunta">
-                <p>16. ¿Qué hacer si David está inquieto (Nivel 3)?</p>
-                <label><input type="radio" name="q16" value="a"> Supervisión aumentada</label>
-                <label><input type="radio" name="q16" value="b"> Llamar a policía</label>
-                <label><input type="radio" name="q16" value="c"> Darle medicación</label>
-            </div>
-            <div class="pregunta">
-                <p>17. En Nivel 5, ¿qué hospital es prioridad?</p>
-                <label><input type="radio" name="q17" value="a"> General (15 min)</label>
-                <label><input type="radio" name="q17" value="b"> Salud mental (40 min)</label>
-                <label><input type="radio" name="q17" value="c"> Ninguno</label>
-            </div>
-            <div class="pregunta">
-                <p>18. ¿Qué indica Nivel 7?</p>
-                <label><input type="radio" name="q18" value="a"> Agresión verbal</label>
-                <label><input type="radio" name="q18" value="b"> Ataque físico</label>
-                <label><input type="radio" name="q18" value="c"> Somnolencia</label>
-            </div>
-            <div class="pregunta">
-                <p>19. Si David amenaza en Nivel 6, ¿qué NO hacer?</p>
-                <label><input type="radio" name="q19" value="a"> Llamar emergencias</label>
-                <label><input type="radio" name="q19" value="b"> Confrontarlo sola</label>
-                <label><input type="radio" name="q19" value="c"> Resguardarse</label>
-            </div>
-            <div class="pregunta">
-                <p>20. ¿Qué usar para supervisar en Nivel 3?</p>
-                <label><input type="radio" name="q20" value="a"> Cámaras</label>
-                <label><input type="radio" name="q20" value="b"> Teléfono</label>
-                <label><input type="radio" name="q20" value="c"> Vecino</label>
-            </div>
-            <button type="submit">Evaluar Respuestas</button>
-        </form>
-    </section>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Mostrar/Ocultar acciones en la tabla
-            const niveles = document.querySelectorAll('.nivel');
-            niveles.forEach(nivel => {
-                nivel.addEventListener('click', function() {
-                    const accion = this.querySelector('.nivel-accion');
-                    accion.classList.toggle('show');
-                });
-            });
+  <h1>Protocolo BARS para Cuidadores de David</h1>
+  <section>
+    <h2>Niveles de Agitación</h2>
+    <ul id="niveles-list">
+      <li class="nivel" data-nivel="1">
+        <span class="nivel-titulo">Nivel 1: Dormido 😴</span>
+        <span class="nivel-descripcion">El paciente duerme tranquilo.</span>
+        <div class="nivel-accion"><p>Supervisión regular, sin acción inmediata.</p></div>
+      </li>
+      <li class="nivel" data-nivel="2">
+        <span class="nivel-titulo">Nivel 2: Somnoliento 😌</span>
+        <span class="nivel-descripcion">Despierto pero muy adormilado.</span>
+        <div class="nivel-accion"><p>Observar y mantener rutinas normales.</p></div>
+      </li>
+      <li class="nivel" data-nivel="3">
+        <span class="nivel-titulo">Nivel 3: Inquieto 🚶‍♂️</span>
+        <span class="nivel-descripcion">Camina de un lado a otro.</span>
+        <div class="nivel-accion"><p>Mayor supervisión. Llamar al enfermero si persiste +30 min.</p></div>
+      </li>
+      <li class="nivel" data-nivel="4">
+        <span class="nivel-titulo">Nivel 4: Agitado 😠</span>
+        <span class="nivel-descripcion">Agresión verbal o inquietud intensa.</span>
+        <div class="nivel-accion"><p>Desescalar con calma y llamar al enfermero.</p></div>
+      </li>
+      <li class="nivel" data-nivel="5">
+        <span class="nivel-titulo">Nivel 5: Muy agitado 📢</span>
+        <span class="nivel-descripcion">Gritos fuertes, agresión leve.</span>
+        <div class="nivel-accion"><p>Llamar enfermero y preparar traslado hospital.</p></div>
+      </li>
+      <li class="nivel" data-nivel="6">
+        <span class="nivel-titulo">Nivel 6: Hostil ⚠️</span>
+        <span class="nivel-descripcion">Amenaza a personas o propiedad.</span>
+        <div class="nivel-accion"><p>Resguardarse y llamar a emergencias.</p></div>
+      </li>
+      <li class="nivel" data-nivel="7">
+        <span class="nivel-titulo">Nivel 7: Agresivo 🚨</span>
+        <span class="nivel-descripcion">Ataca físicamente.</span>
+        <div class="nivel-accion"><p>Salir o encerrarse. Llamar policía + ambulancia.</p></div>
+      </li>
+    </ul>
+  </section>
 
-            // Respuestas correctas del quiz
-            const respuestasCorrectas = {
-                q1: 'b', q2: 'a', q3: 'b', q4: 'b', q5: 'a',
-                q6: 'b', q7: 'b', q8: 'b', q9: 'b', q10: 'b',
-                q11: 'b', q12: 'a', q13: 'b', q14: 'b', q15: 'a',
-                q16: 'a', q17: 'a', q18: 'b', q19: 'b', q20: 'a'
-            };
+  <section id="quiz">
+    <h2>Quiz Interactivo 🎮</h2>
+    <form id="quiz-form">
+      <!-- Pregunta múltiple -->
+      <div class="pregunta">
+        <p>1. Si David está dormido, ¿qué hacer?</p>
+        <label><input type="radio" name="q1" value="b"> Supervisión regular</label>
+        <label><input type="radio" name="q1" value="a"> Llamar emergencias</label>
+      </div>
 
-            // Evaluar el quiz
-            document.getElementById('quiz-form').addEventListener('submit', function(e) {
-                e.preventDefault();
-                let score = 0;
-                for (let i = 1; i <= 20; i++) {
-                    const selected = document.querySelector(`input[name="q${i}"]:checked`);
-                    if (selected && selected.value === respuestasCorrectas[`q${i}`]) {
-                        score++;
-                    }
-                }
-                alert(`Tu puntuación es: ${score}/20`);
-            });
-        });
-    </script>
+      <!-- Completar la frase -->
+      <div class="pregunta">
+        <p>2. Completa: En Nivel 4 debo hablar con _____ y llamar al enfermero.</p>
+        <input type="text" name="q2" placeholder="Escribe aquí">
+      </div>
+
+      <!-- Drag & Drop -->
+      <div class="pregunta">
+        <p>3. Arrastra la acción al nivel correcto:</p>
+        <div class="drag-container">
+          <div class="draggable" draggable="true" data-respuesta="3">Mayor supervisión</div>
+          <div class="draggable" draggable="true" data-respuesta="7">Llamar a policía</div>
+        </div>
+        <div class="dropzone" data-nivel="3">Nivel 3</div>
+        <div class="dropzone" data-nivel="7">Nivel 7</div>
+      </div>
+
+      <!-- Matching con opciones -->
+      <div class="pregunta">
+        <p>4. Relaciona el nivel con su acción:</p>
+        <select name="q4">
+          <option value="">-- Elige --</option>
+          <option value="5">Nivel 5 → Traslado hospital</option>
+          <option value="2">Nivel 2 → Ignorarlo</option>
+        </select>
+      </div>
+
+      <button type="submit">Evaluar Respuestas ✅</button>
+    </form>
+    <div id="resultado"></div>
+  </section>
+
+  <script>
+    // Expandir niveles
+    document.querySelectorAll('.nivel').forEach(nivel => {
+      nivel.addEventListener('click', () => {
+        nivel.querySelector('.nivel-accion').classList.toggle('show');
+      });
+    });
+
+    // Drag & Drop
+    const draggables = document.querySelectorAll('.draggable');
+    const dropzones = document.querySelectorAll('.dropzone');
+
+    draggables.forEach(d => {
+      d.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', d.dataset.respuesta); });
+    });
+
+    dropzones.forEach(z => {
+      z.addEventListener('dragover', e => e.preventDefault());
+      z.addEventListener('drop', e => {
+        e.preventDefault();
+        const respuesta = e.dataTransfer.getData('text/plain');
+        z.textContent = `Nivel ${z.dataset.nivel}: ${respuesta == z.dataset.nivel ? '✔️ Correcto' : '❌ Incorrecto'}`;
+      });
+    });
+
+    // Evaluar quiz
+    document.getElementById('quiz-form').addEventListener('submit', e => {
+      e.preventDefault();
+      let score = 0;
+
+      // Q1
+      const q1 = document.querySelector('input[name="q1"]:checked');
+      if (q1 && q1.value === 'b') score++;
+
+      // Q2
+      const q2 = document.querySelector('input[name="q2"]').value.trim().toLowerCase();
+      if (q2 === 'calma') score++;
+
+      // Q4
+      const q4 = document.querySelector('select[name="q4"]').value;
+      if (q4 === '5') score++;
+
+      document.getElementById('resultado').textContent = `Puntuación: ${score}/3 (más drag & drop aparte)`;
+    });
+  </script>
 </body>
 </html>
